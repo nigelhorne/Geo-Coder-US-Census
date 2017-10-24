@@ -4,7 +4,7 @@ Geo::Coder::US::Census - Provides a geocoding functionality using http:://geocod
 
 # VERSION
 
-Version 0.01
+Version 0.02
 
 # SYNOPSIS
 

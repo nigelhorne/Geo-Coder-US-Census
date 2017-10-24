@@ -14,15 +14,15 @@ use Geo::StreetAddress::US;
 
 =head1 NAME
 
-Geo::Coder::US::Census - Provides a geocoding functionality using http:://geocoding.geo.census.gov for the US.
+Geo::Coder::US::Census - Provides a geocoding functionality for the US using http:://geocoding.geo.census.gov
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
