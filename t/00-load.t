@@ -10,4 +10,4 @@ BEGIN {
 
 require_ok('Geo::Coder::US::Census') || print 'Bail out!';
 
-diag( "Testing Geo::Coder::US::Census $Geo::Coder::CA::VERSION, Perl $], $^X" );
+diag( "Testing Geo::Coder::US::Census $Geo::Coder::US::Census::VERSION, Perl $], $^X" );

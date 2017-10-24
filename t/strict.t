@@ -14,5 +14,5 @@ if($@) {
 	plan skip_all => 'Test::Strict required for testing use strict';
 } else {
 	all_perl_files_ok();
-	warnings_ok('lib/Geo/Coder/CA.pm');
+	warnings_ok('lib/Geo/Coder/US/Census.pm');
 }
