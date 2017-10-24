@@ -2,7 +2,6 @@
 
 use warnings;
 use strict;
-use Test::LWP::UserAgent;
 use Test::Number::Delta within => 1e-2;
 use Test::Most tests => 9;
 use Test::Carp;
@@ -14,6 +13,9 @@ BEGIN {
 US: {
 	SKIP: {
 		skip 'Test requires Internet access', 8 unless(-e 't/online.enabled');
+
+		require Test::LWP::UserAgent;
+		Test::LWP::UserAgent->import();
 
 		my $geocoder = new_ok('Geo::Coder::US::Census');
 		my $location = $geocoder->geocode('1600 Pennsylvania Avenue NW, Washington DC');

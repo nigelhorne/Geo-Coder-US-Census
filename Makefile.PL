@@ -52,6 +52,7 @@ WriteMakefile(
 	'LWP::Protocol::https' => 0,
 	'URI' => 0,
 	'Geo::StreetAddress::US' => 0,
+	'Net::SSLeay' => 1.81,
     },
     dist		=> { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean		=> { FILES => 'Geo-Coder-US-Census-*' },
