@@ -105,7 +105,7 @@ sub geocode {
 	}
 	$query_parameters{'city'} = $hr->{'city'};
 	$query_parameters{'state'} = $hr->{'state'};
-	
+
 	$uri->query_form(%query_parameters);
 	my $url = $uri->as_string();
 
@@ -190,7 +190,7 @@ sub run {
 	my $location = join(' ', @_);
 
 	my @rc = $class->new()->geocode($location);
-	
+
 	die "$0: geocoding failed" unless(scalar(@rc));
 
 	print Data::Dumper->new([\@rc])->Dump();
