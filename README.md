@@ -1,6 +1,8 @@
-# NAME
+[![Kritika Analysis Status](https://kritika.io/users/nigelhorne/repos/7736847150242974/heads/master/status.svg)](https://kritika.io/users/nigelhorne/repos/7736847150242974/heads/master/)
 
-Geo::Coder::US::Census - Provides a geocoding functionality using http:://geocoding.geo.census.gov for the US.
+# Geo::Coder::US::Census
+
+Provides a geocoding functionality for the US using http:://geocoding.geo.census.gov
 
 # VERSION
 
@@ -11,7 +13,9 @@ Version 0.02
       use Geo::Coder::US::Census;
 
       my $geocoder = Geo::Coder::US::Census->new();
-      my $location = $geocoder->geocode(location => '4600 Silver Hill Rd., Suitland, MD, USA');
+      my $location = $geocoder->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
+      # Sometimes the server gives a 500 error on this
+      $location = $geocoder->geocode(location => '4600 Silver Hill Rd., Suitland, MD, USA');
 
 # DESCRIPTION
 
@@ -53,6 +57,12 @@ You can also set your own User-Agent object:
 \# Similar to geocode except it expects a latitude/longitude parameter.
 
 Not supported.
+
+## run
+
+You can also run this module from the command line:
+
+    perl Census.pm 1600 Pennsylvania Avenue NW, Washington DC
 
 # AUTHOR
 

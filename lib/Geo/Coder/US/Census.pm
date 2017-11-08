@@ -170,7 +170,7 @@ sub reverse_geocode {
 
 	# return $self->geocode(location => $latlng, reverse => 1);
 	Carp::croak('Reverse geocode is not supported');
-};
+}
 
 =head2 run
 
