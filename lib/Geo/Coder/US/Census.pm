@@ -84,8 +84,16 @@ sub geocode {
 		$location = Encode::encode_utf8($location);
 	}
 
-	if($location =~ /,?(.+)\s*(United States|US|USA)$/i) {
+	if($location =~ /,?(.+),\s*(United States|US|USA)$/i) {
 		$location = $1;
+	}
+
+	# Remove county from the string, if that's included
+	# Assumes not more than one town in a state with the same name
+	# in different counties - but the census geocoding doesn't support that
+	# anyway
+	if($location =~ /^(\d+\s+[\w\s]+),\s*([\w\s]+),\s*[\w\s]+,\s*([A-Za-z]+)$/) {
+		$location = "$1, $2, $3";
 	}
 
 	my $uri = URI->new("https://$self->{host}");
