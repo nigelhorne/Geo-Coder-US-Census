@@ -31,6 +31,7 @@ if($online_tests) {
 	open(my $enabled, '>', 't/online.enabled') || die "Can't touch t/online.enabled $!";
 	close($enabled) || die "Can't touch t/online.enabled $!";
 	$test_requires->{'Test::LWP::UserAgent'} = 0;
+	$test_requires->{'Test::Script'} = 1.12;
 } else {
 	unlink('t/online.enabled');
 }
