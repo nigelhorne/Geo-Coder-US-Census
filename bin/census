@@ -15,5 +15,5 @@ die $@ if $@;
 sub doit
 {
 	print "Test 1 - White House\n";
-	system("perl $Bin/../lib/Geo/Coder/US/Census.pm 1600 Pennsylvania Avenue NW, Washington DC");
+	system("$^X $Bin/../lib/Geo/Coder/US/Census.pm 1600 Pennsylvania Avenue NW, Washington DC");
 }
