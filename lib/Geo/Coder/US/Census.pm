@@ -69,9 +69,13 @@ sub new {
 
 sub geocode {
 	my $self = shift;
-
 	my %param;
-	if (@_ % 2 == 0) {
+
+	if(ref($_[0]) eq 'HASH') {
+		%param = %{$_[0]};
+	} elsif(ref($_[0])) {
+		Carp::croak('Usage: geocode(location => $location)');
+	} elsif(@_ % 2 == 0) {
 		%param = @_;
 	} else {
 		$param{location} = shift;

@@ -13,7 +13,7 @@ BEGIN {
 US: {
 	SKIP: {
 		if(!-e 't/online.enabled') {
-			if(!$ENV{RELEASE_TESTING}) {
+			if(!$ENV{AUTHOR_TESTING}) {
 				diag('Author tests not required for installation');
 				skip('Author tests not required for installation', 12);
 			} else {
@@ -44,7 +44,7 @@ US: {
 			delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -87.03);	# Long
 		}
 
-		$location = $geocoder->geocode(location => '6502 SW. 102nd Avenue, Bushnell, Florida, USA');
+		$location = $geocoder->geocode({ location => '6502 SW. 102nd Avenue, Bushnell, Florida, USA' });
 		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 28.61);	# Lat
 		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -82.21);	# Long
 

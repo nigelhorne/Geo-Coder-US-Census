@@ -10,7 +10,7 @@ script_compiles('bin/census');
 BIN: {
 	SKIP: {
 		if(!-e 't/online.enabled') {
-			if(!$ENV{RELEASE_TESTING}) {
+			if(!$ENV{AUTHOR_TESTING}) {
 				diag('Author tests not required for installation');
 				skip('Author tests not required for installation', 5);
 			} else {
