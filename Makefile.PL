@@ -6,7 +6,7 @@ use IO::Socket::INET;
 
 my $online_tests;
 
-if($ENV{RELEASE_TESTING}) {
+if($ENV{AUTHOR_TESTING}) {
 	$online_tests = are_online();
 } elsif($ENV{AUTOMATED_TESTING} || $ENV{NO_NETWORK_TESTING} || (!-t STDIN)) {
 	$online_tests = 0;
@@ -14,7 +14,11 @@ if($ENV{RELEASE_TESTING}) {
 	Getopt::Long::GetOptions('online-tests!' => \$online_tests);
 
 	if(!defined($online_tests)) {
-		$online_tests = are_online();
+		if($ENV{AUTHOR_TESTING}) {
+			$online_tests = are_online();
+		} else {
+			$online_tests = 0;
+		}
 	}
 }
 
@@ -37,43 +41,43 @@ if($online_tests) {
 }
 
 WriteMakefile(
-    NAME		=> 'Geo::Coder::US::Census',
-    AUTHOR		=> q{Nigel Horne <njh@bandsman.co.uk>},
-    VERSION_FROM	=> 'lib/Geo/Coder/US/Census.pm',
-    ABSTRACT_FROM       => 'lib/Geo/Coder/US/Census.pm',
-    ((defined($ExtUtils::MakeMaker::VERSION) &&
-     ($ExtUtils::MakeMaker::VERSION >= 6.3002))
-      ? ('LICENSE'=> 'GPL')
-      : ()),
-    PL_FILES	=> {},
-    TEST_REQUIRES => $test_requires,
-    PREREQ_PM => {
-	'Encode' => 0,
-	'JSON' => 0,
-	'HTTP::Request' => 0,
-	'LWP::UserAgent' => 0,
-	'LWP::Protocol::https' => 0,
-	'URI' => 0,
-	'Geo::StreetAddress::US' => 0,
-	'Net::SSLeay' => 1.81,
-    },
-    dist		=> { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean		=> { FILES => 'Geo-Coder-US-Census-*' },
-    META_MERGE		=> {
-    	'meta-spec' => { version => 2 },
-    	resources => {
-    		repository => {
+	NAME		=> 'Geo::Coder::US::Census',
+	AUTHOR		=> q{Nigel Horne <njh@bandsman.co.uk>},
+	VERSION_FROM	=> 'lib/Geo/Coder/US/Census.pm',
+	ABSTRACT_FROM	   => 'lib/Geo/Coder/US/Census.pm',
+	((defined($ExtUtils::MakeMaker::VERSION) &&
+	 ($ExtUtils::MakeMaker::VERSION >= 6.3002))
+	  ? ('LICENSE'=> 'GPL')
+	  : ()),
+	PL_FILES	=> {},
+	TEST_REQUIRES => $test_requires,
+	PREREQ_PM => {
+		'Encode' => 0,
+		'JSON' => 0,
+		'HTTP::Request' => 0,
+		'LWP::UserAgent' => 0,
+		'LWP::Protocol::https' => 0,
+		'URI' => 0,
+		'Geo::StreetAddress::US' => 0,
+		'Net::SSLeay' => 1.81,
+	},
+	dist		=> { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+	clean		=> { FILES => 'Geo-Coder-US-Census-*' },
+	META_MERGE		=> {
+		'meta-spec' => { version => 2 },
+		resources => {
+			repository => {
 			type => 'git',
 			url => 'git://github.com/nigelhorne/Geo-Coder-US-Census.git',
 			web => 'https://github.com/nigelhorne/Geo-Coder-US-Census',
-    		},
-		bugtracker => {
-			web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Geo-Coder-US-Census',
-			mailto => 'bug-Geo-Coder-US-Census@rt.cpan.org'
-		}
+			},
+			bugtracker => {
+				web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Geo-Coder-US-Census',
+				mailto => 'bug-Geo-Coder-US-Census@rt.cpan.org'
+			}
+		},
 	},
-    },
-    MIN_PERL_VERSION	=> '5.6.2'	# Probably would work, but never tested on earlier versions than this
+	MIN_PERL_VERSION	=> '5.6.2'	# Probably would work, but never tested on earlier versions than this
 );
 
 sub are_online

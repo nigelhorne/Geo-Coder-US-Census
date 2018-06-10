@@ -9,7 +9,15 @@ script_compiles('bin/census');
 
 BIN: {
 	SKIP: {
-		skip 'Test requires Internet access', 5 unless(-e 't/online.enabled');
+		if(!-e 't/online.enabled') {
+			if(!$ENV{RELEASE_TESTING}) {
+				diag('Author tests not required for installation');
+				skip('Author tests not required for installation', 5);
+			} else {
+				diag('Test requires Internet access');
+				skip('Test requires Internet access', 5);
+			}
+		}
 
 		script_runs(['bin/census']);
 

@@ -14,7 +14,7 @@ use Geo::StreetAddress::US;
 
 =head1 NAME
 
-Geo::Coder::US::Census - Provides a geocoding functionality for the US using http:://geocoding.geo.census.gov
+Geo::Coder::US::Census - Provides a Geo-Coding functionality for the US using http:://geocoding.geo.census.gov
 
 =head1 VERSION
 
@@ -28,10 +28,10 @@ our $VERSION = '0.02';
 
       use Geo::Coder::US::Census;
 
-      my $geocoder = Geo::Coder::US::Census->new();
-      my $location = $geocoder->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
+      my $geo_coder = Geo::Coder::US::Census->new();
+      my $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
       # Sometimes the server gives a 500 error on this
-      $location = $geocoder->geocode(location => '4600 Silver Hill Rd., Suitland, MD, USA');
+      $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD, USA');
 
 =head1 DESCRIPTION
 
@@ -41,10 +41,10 @@ Geo::Coder::US::Census provides an interface to geocoding.geo.census.gov.  Geo::
 
 =head2 new
 
-    $geocoder = Geo::Coder::US::Census->new();
+    $geo_coder = Geo::Coder::US::Census->new();
     my $ua = LWP::UserAgent->new();
     $ua->env_proxy(1);
-    $geocoder = Geo::Coder::US::Census->new(ua => $ua);
+    $geo_coder = Geo::Coder::US::Census->new(ua => $ua);
 
 =cut
 
@@ -59,8 +59,8 @@ sub new {
 
 =head2 geocode
 
-    $location = $geocoder->geocode(location => $location);
-    # @location = $geocoder->geocode(location => $location);
+    $location = $geo_coder->geocode(location => $location);
+    # @location = $geo_coder->geocode(location => $location);
 
     print 'Latitude: ', $location->{'latt'}, "\n";
     print 'Longitude: ', $location->{'longt'}, "\n";
@@ -78,7 +78,7 @@ sub geocode {
 	}
 
 	my $location = $param{location}
-		or Carp::croak("Usage: geocode(location => \$location)");
+		or Carp::croak('Usage: geocode(location => $location)');
 
 	if (Encode::is_utf8($location)) {
 		$location = Encode::encode_utf8($location);
@@ -90,7 +90,7 @@ sub geocode {
 
 	# Remove county from the string, if that's included
 	# Assumes not more than one town in a state with the same name
-	# in different counties - but the census geocoding doesn't support that
+	# in different counties - but the census Geo-Coding doesn't support that
 	# anyway
 	if($location =~ /^(\d+\s+[\w\s]+),\s*([\w\s]+),\s*[\w\s]+,\s*([A-Za-z]+)$/) {
 		$location = "$1, $2, $3";
@@ -137,11 +137,11 @@ Accessor method to get and set UserAgent object used internally. You
 can call I<env_proxy> for example, to get the proxy information from
 environment variables:
 
-  $geocoder->ua()->env_proxy(1);
+  $geo_coder->ua()->env_proxy(1);
 
 You can also set your own User-Agent object:
 
-  $geocoder->ua(LWP::UserAgent::Throttled->new());
+  $geo_coder->ua(LWP::UserAgent::Throttled->new());
 
 =cut
 
@@ -155,7 +155,7 @@ sub ua {
 
 =head2 reverse_geocode
 
-    # $location = $geocoder->reverse_geocode(latlng => '37.778907,-122.39732');
+    # $location = $geo_coder->reverse_geocode(latlng => '37.778907,-122.39732');
 
 # Similar to geocode except it expects a latitude/longitude parameter.
 
