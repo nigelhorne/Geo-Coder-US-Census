@@ -18,11 +18,11 @@ Geo::Coder::US::Census - Provides a Geo-Coding functionality for the US using ht
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -231,7 +231,7 @@ https://www.census.gov/data/developers/data-sets/Geocoding-services.html
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2017 Nigel Horne.
+Copyright 2017,2018 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
