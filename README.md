@@ -3,7 +3,7 @@
 
 # Geo::Coder::US::Census
 
-Provides a geocoding functionality for the US using http:://geocoding.geo.census.gov
+Provides a geocoding functionality for the US using http://geocoding.geo.census.gov
 
 # VERSION
 
@@ -69,7 +69,7 @@ You can also run this module from the command line:
 
 Nigel Horne <njh@bandsman.co.uk>
 
-Based on [Geo::Coder::Coder::Googleplaces](https://metacpan.org/pod/Geo::Coder::Coder::Googleplaces).
+Based on [Geo::Coder::GooglePlaces](https://metacpan.org/pod/Geo::Coder::GooglePlaces).
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
