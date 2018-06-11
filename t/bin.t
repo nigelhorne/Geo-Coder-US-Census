@@ -3,25 +3,31 @@
 use strict;
 
 use Test::Most tests => 6;
-use Test::Script;
-
-script_compiles('bin/census');
 
 BIN: {
-	SKIP: {
-		if(!-e 't/online.enabled') {
-			if(!$ENV{AUTHOR_TESTING}) {
-				diag('Author tests not required for installation');
-				skip('Author tests not required for installation', 5);
+	eval 'use Test::Script';
+	if($@) {
+		plan skip_all => 'Test::Script required for testing scripts';
+	} else {
+		SKIP: {
+			if(-e 't/online.enabled') {
+				script_compiles('bin/census');
 			} else {
-				diag('Test requires Internet access');
-				skip('Test requires Internet access', 5);
+				if(!$ENV{AUTHOR_TESTING}) {
+					diag('Author tests not required for installation');
+					skip('Author tests not required for installation', 6);
+				} else {
+					script_compiles('bin/census');
+
+					diag('Test requires Internet access');
+					skip('Test requires Internet access', 5);
+				}
 			}
+
+			script_runs(['bin/census']);
+
+			ok(script_stdout_like(qr/\-77\.03/, 'test 1'));
+			ok(script_stderr_is('', 'no error output'));
 		}
-
-		script_runs(['bin/census']);
-
-		ok(script_stdout_like(qr/\-77\.03/, 'test 1'));
-		ok(script_stderr_is('', 'no error output'));
 	}
 }
