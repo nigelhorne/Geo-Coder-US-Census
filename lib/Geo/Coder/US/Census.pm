@@ -14,7 +14,7 @@ use Geo::StreetAddress::US;
 
 =head1 NAME
 
-Geo::Coder::US::Census - Provides a Geo-Coding functionality for the US using http:://geocoding.geo.census.gov
+Geo::Coder::US::Census - Provides a Geo-Coding functionality for the US using L<https://geocoding.geo.census.gov>
 
 =head1 VERSION
 
