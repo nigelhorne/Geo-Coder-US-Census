@@ -3,11 +3,11 @@
 
 # Geo::Coder::US::Census
 
-Provides a geocoding functionality for the US using http://geocoding.geo.census.gov
+Provides a Geo-Coding functionality for the US using [https://geocoding.geo.census.gov](https://geocoding.geo.census.gov)
 
 # VERSION
 
-Version 0.03
+Version 0.04
 
 # SYNOPSIS
 
