@@ -18,11 +18,11 @@ Geo::Coder::US::Census - Provides a Geo-Coding functionality for the US using L<
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 

@@ -7,7 +7,7 @@ Provides a Geo-Coding functionality for the US using [https://geocoding.geo.cens
 
 # VERSION
 
-Version 0.04
+Version 0.05
 
 # SYNOPSIS
 
