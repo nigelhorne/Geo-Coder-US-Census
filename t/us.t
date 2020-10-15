@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 use Test::Number::Delta within => 1e-2;
-use Test::Most tests => 13;
+use Test::Most tests => 14;
 use Test::Carp;
 
 BEGIN {
@@ -15,14 +15,14 @@ US: {
 		if(!-e 't/online.enabled') {
 			if(!$ENV{AUTHOR_TESTING}) {
 				diag('Author tests not required for installation');
-				skip('Author tests not required for installation', 12);
+				skip('Author tests not required for installation', 13);
 			} else {
 				diag('Test requires Internet access');
-				skip('Test requires Internet access', 12);
+				skip('Test requires Internet access', 13);
 			}
 		}
 
-		require Test::LWP::UserAgent;
+		require_ok('Test::LWP::UserAgent');
 		Test::LWP::UserAgent->import();
 
 		my $geocoder = new_ok('Geo::Coder::US::Census');
@@ -39,9 +39,20 @@ US: {
 			# Test counties
 			local $TODO = "geocoding.geo.census.gov doesn't support counties";
 
-			$location = $geocoder->geocode('1363 Kelly Road, Coal City, Owen, Indiana, USA');
-			delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 39.27);	# Lat
-			delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -87.03);	# Long
+			if($location = $geocoder->geocode('1363 Kelly Road, Coal City, Owen, Indiana, USA')) {
+				if($location->{result}{addressMatches}) {
+					# delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 39.27);	# Lat
+					# delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -87.03);	# Long
+					pass('Counties unexpectedly pass Lat');
+					pass('Counties unexpectedly pass Long');
+				} else {
+					fail('Counties Lat');
+					fail('Counties Long');
+				}
+			} else {
+				fail('Counties Lat');
+				fail('Counties Long');
+			}
 		}
 
 		$location = $geocoder->geocode({ location => '6502 SW. 102nd Avenue, Bushnell, Florida, USA' });
