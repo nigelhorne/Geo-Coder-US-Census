@@ -11,7 +11,7 @@ perl:
   - "5.18"
   - "5.16"
   - "5.14"
-  - "5.12"
+  # - "5.12"
 
 before_install:
   cpanm -n Devel::Cover::Report::Coveralls Test::Script Test::Pod::Spelling::CommonMistakes Test::Portability::Files Test::Taint Test::Carp LWP::Protocol::https JSON::XS Test::Exception
@@ -21,3 +21,6 @@ install:
 
 script:
   perl Makefile.PL && make && cover -test -report coveralls
+
+after_failure:
+  - cat /home/travis/.cpanm/work/*/build.log
