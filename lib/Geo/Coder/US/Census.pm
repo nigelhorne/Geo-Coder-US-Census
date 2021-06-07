@@ -118,13 +118,18 @@ sub geocode {
 	$query_parameters{'city'} = $hr->{'city'};
 	$query_parameters{'state'} = $hr->{'state'};
 
+	if((!defined($hr->{'city'})) || (!defined($hr->{'state'}))) {
+		Carp::carp(__PACKAGE__ . ': city and state are mandatory');
+		return;
+	}
+
 	$uri->query_form(%query_parameters);
 	my $url = $uri->as_string();
 
 	my $res = $self->{ua}->get($url);
 
 	if($res->is_error()) {
-		Carp::croak("$url API returned error: " . $res->status_line());
+		Carp::carp("$url API returned error: " . $res->status_line());
 		return;
 	}
 

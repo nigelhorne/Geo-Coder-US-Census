@@ -7,6 +7,7 @@
 
 use warnings;
 use strict;
+use Data::Dumper;
 use Test::Number::Delta within => 1e-2;
 use Test::Most tests => 14;
 use Test::Carp;
@@ -48,6 +49,9 @@ US: {
 				if($location->{result}{addressMatches}) {
 					# delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 39.27);	# Lat
 					# delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -87.03);	# Long
+					if($ENV{'TEST_VERBOSE'}) {
+						diag(Data::Dumper->new([\$location])->Dump());
+					}
 					pass('Counties unexpectedly pass Lat');
 					pass('Counties unexpectedly pass Long');
 				} else {
@@ -75,6 +79,6 @@ US: {
 		sub f {
 			$location = $geocoder->geocode({ location => '1600 Pennsylvania Avenue NW, Washington DC, USA' });
 		}
-		does_croak_that_matches(\&f, qr/https?:\/\/geocoding.geo.census.gov.+ API returned error: 500/);
+		does_carp_that_matches(\&f, qr/https?:\/\/geocoding.geo.census.gov.+ API returned error: 500/);
 	}
 }
