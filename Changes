@@ -1,6 +1,7 @@
 Revision history for Geo-Coder-US-Census
 
 0.06
+	Compress the traffic
 	state and city are no longer optional
 
 0.05	Thu Jun 14 13:58:23 EDT 2018

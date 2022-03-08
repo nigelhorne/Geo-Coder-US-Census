@@ -51,8 +51,12 @@ Geo::Coder::US::Census provides an interface to geocoding.geo.census.gov.  Geo::
 sub new {
 	my($class, %param) = @_;
 
-	my $ua = delete $param{ua} || LWP::UserAgent->new(agent => __PACKAGE__ . "/$VERSION");
-	my $host = delete $param{host} || 'geocoding.geo.census.gov/geocoder/locations/address';
+	my $ua = $param{ua};
+	if(!defined($ua)) {
+		$ua = LWP::UserAgent->new(agent => __PACKAGE__ . "/$VERSION");
+		$ua->default_header(accept_encoding => 'gzip,deflate');
+	}
+	my $host = $param{host} || 'geocoding.geo.census.gov/geocoder/locations/address';
 
 	return bless { ua => $ua, host => $host }, $class;
 }
@@ -134,7 +138,7 @@ sub geocode {
 	}
 
 	my $json = JSON->new->utf8();
-	return $json->decode($res->content());
+	return $json->decode($res->decoded_content());
 
 	# my @results = @{ $data || [] };
 	# wantarray ? @results : $results[0];
@@ -236,7 +240,7 @@ https://www.census.gov/data/developers/data-sets/Geocoding-services.html
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2017,2018 Nigel Horne.
+Copyright 2017-2022 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
