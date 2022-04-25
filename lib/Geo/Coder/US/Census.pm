@@ -108,7 +108,17 @@ sub geocode {
 	$location =~ s/\s/+/g;
 	my $hr = Geo::StreetAddress::US->parse_address($location);
 
-	my %query_parameters = ('format' => 'json', 'benchmark' => 'Public_AR_Current');
+	if((!defined($hr->{'city'})) || (!defined($hr->{'state'}))) {
+		Carp::carp(__PACKAGE__ . ': city and state are mandatory');
+		return;
+	}
+
+	my %query_parameters = (
+		'benchmark' => 'Public_AR_Current'
+		'city' => $hr->{'city'},
+		'format' => 'json',
+		'state' => $hr->{'state'},
+	);
 	if($hr->{'street'}) {
 		if($hr->{'number'}) {
 			$query_parameters{'street'} = $hr->{'number'} . ' ' . $hr->{'street'} . ' ' . $hr->{'type'};
@@ -118,13 +128,6 @@ sub geocode {
 		if($hr->{'suffix'}) {
 			$query_parameters{'street'} .= ' ' . $hr->{'suffix'};
 		}
-	}
-	$query_parameters{'city'} = $hr->{'city'};
-	$query_parameters{'state'} = $hr->{'state'};
-
-	if((!defined($hr->{'city'})) || (!defined($hr->{'state'}))) {
-		Carp::carp(__PACKAGE__ . ': city and state are mandatory');
-		return;
 	}
 
 	$uri->query_form(%query_parameters);
