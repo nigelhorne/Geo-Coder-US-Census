@@ -114,7 +114,7 @@ sub geocode {
 	}
 
 	my %query_parameters = (
-		'benchmark' => 'Public_AR_Current'
+		'benchmark' => 'Public_AR_Current',
 		'city' => $hr->{'city'},
 		'format' => 'json',
 		'state' => $hr->{'state'},
