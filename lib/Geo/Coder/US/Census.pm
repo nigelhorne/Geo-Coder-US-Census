@@ -109,7 +109,7 @@ sub geocode {
 	my $hr = Geo::StreetAddress::US->parse_address($location);
 
 	if((!defined($hr->{'city'})) || (!defined($hr->{'state'}))) {
-		Carp::carp(__PACKAGE__ . ': city and state are mandatory');
+		Carp::carp(__PACKAGE__ . ": city and state are mandatory ($location)");
 		return;
 	}
 
