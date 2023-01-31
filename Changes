@@ -5,6 +5,7 @@ Revision history for Geo-Coder-US-Census
 	state and city are no longer optional
 	Use JSON::MaybeXS instead of JSON
 	Fix handling of states which include spaces in their name
+	Fix handling of roads which include full stops in their names
 
 0.05	Thu Jun 14 13:58:23 EDT 2018
 	Fix http://www.cpantesters.org/cpan/report/06c7f8a0-6fe9-11e8-81cb-9beef726102b

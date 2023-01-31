@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Data::Dumper;
 use Test::Number::Delta within => 1e-2;
-use Test::Most tests => 16;
+use Test::Most tests => 18;
 use Test::Carp;
 
 BEGIN {
@@ -21,10 +21,10 @@ US: {
 		if(!-e 't/online.enabled') {
 			if(!$ENV{AUTHOR_TESTING}) {
 				diag('Author tests not required for installation');
-				skip('Author tests not required for installation', 15);
+				skip('Author tests not required for installation', 17);
 			} else {
 				diag('Test requires Internet access');
-				skip('Test requires Internet access', 15);
+				skip('Test requires Internet access', 17);
 			}
 		}
 
@@ -71,6 +71,13 @@ US: {
 		$location = $geocoder->geocode('121 McIver Street, Greensboro, Guilford, North Carolina');
 		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 36.08);	# Lat
 		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -79.81);	# Long
+		if($ENV{'TEST_VERBOSE'}) {
+			diag(Data::Dumper->new([$location])->Dump());
+		}
+
+		$location = $geocoder->geocode('105 S. West Street, Spencer, Owen, Indiana');
+		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 39.28);	# Lat
+		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -86.76);	# Long
 		if($ENV{'TEST_VERBOSE'}) {
 			diag(Data::Dumper->new([$location])->Dump());
 		}

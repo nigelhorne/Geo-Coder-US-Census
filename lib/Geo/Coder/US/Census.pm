@@ -101,7 +101,8 @@ sub geocode {
 	# in different counties - but the census Geo-Coding doesn't support that
 	# anyway
 	# Some full state names include spaces, e.g South Carolina
-	if($location =~ /^(\d+\s+[\w\s]+),\s*([\w\s]+),\s*[\w\s]+,\s*([A-Za-z\s]+)$/) {
+	# Some roads include full stops, e.g. S. West Street
+	if($location =~ /^(\d+\s+[\w\s\.]+),\s*([\w\s]+),\s*[\w\s]+,\s*([A-Za-z\s]+)$/) {
 		$location = "$1, $2, $3";
 	}
 
