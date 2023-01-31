@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Data::Dumper;
 use Test::Number::Delta within => 1e-2;
-use Test::Most tests => 14;
+use Test::Most tests => 16;
 use Test::Carp;
 
 BEGIN {
@@ -21,10 +21,10 @@ US: {
 		if(!-e 't/online.enabled') {
 			if(!$ENV{AUTHOR_TESTING}) {
 				diag('Author tests not required for installation');
-				skip('Author tests not required for installation', 13);
+				skip('Author tests not required for installation', 15);
 			} else {
 				diag('Test requires Internet access');
-				skip('Test requires Internet access', 13);
+				skip('Test requires Internet access', 15);
 			}
 		}
 
@@ -67,6 +67,13 @@ US: {
 		$location = $geocoder->geocode({ location => '6502 SW. 102nd Avenue, Bushnell, Florida, USA' });
 		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 28.61);	# Lat
 		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -82.21);	# Long
+
+		$location = $geocoder->geocode('121 McIver Street, Greensboro, Guilford, North Carolina');
+		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 36.08);	# Lat
+		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -79.81);	# Long
+		if($ENV{'TEST_VERBOSE'}) {
+			diag(Data::Dumper->new([$location])->Dump());
+		}
 
 		# my $address = $geocoder->reverse_geocode('38.9,-77.04');
 		# is($address->{'prov'}, 'DC', 'test reverse');

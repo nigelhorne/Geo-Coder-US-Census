@@ -100,12 +100,12 @@ sub geocode {
 	# Assumes not more than one town in a state with the same name
 	# in different counties - but the census Geo-Coding doesn't support that
 	# anyway
-	if($location =~ /^(\d+\s+[\w\s]+),\s*([\w\s]+),\s*[\w\s]+,\s*([A-Za-z]+)$/) {
+	# Some full state names include spaces, e.g South Carolina
+	if($location =~ /^(\d+\s+[\w\s]+),\s*([\w\s]+),\s*[\w\s]+,\s*([A-Za-z\s]+)$/) {
 		$location = "$1, $2, $3";
 	}
 
 	my $uri = URI->new("https://$self->{host}");
-	$location =~ s/\s/+/g;
 	my $hr = Geo::StreetAddress::US->parse_address($location);
 
 	if((!defined($hr->{'city'})) || (!defined($hr->{'state'}))) {
@@ -243,7 +243,7 @@ https://www.census.gov/data/developers/data-sets/Geocoding-services.html
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2017-2022 Nigel Horne.
+Copyright 2017-2023 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
