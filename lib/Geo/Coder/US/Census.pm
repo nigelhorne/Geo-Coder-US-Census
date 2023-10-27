@@ -49,14 +49,18 @@ Geo::Coder::US::Census provides an interface to geocoding.geo.census.gov.  Geo::
 =cut
 
 sub new {
-	my($class, %param) = @_;
+	my $class = $_[0];
 
-	my $ua = $param{ua};
+	shift;
+	my %args = (ref($_[0]) eq 'HASH') ? %{$_[0]} : @_;
+
+	my $ua = $args{ua};
 	if(!defined($ua)) {
 		$ua = LWP::UserAgent->new(agent => __PACKAGE__ . "/$VERSION");
 		$ua->default_header(accept_encoding => 'gzip,deflate');
+		$ua->env_proxy(1);
 	}
-	my $host = $param{host} || 'geocoding.geo.census.gov/geocoder/locations/address';
+	my $host = $args{host} || 'geocoding.geo.census.gov/geocoder/locations/address';
 
 	return bless { ua => $ua, host => $host }, $class;
 }
