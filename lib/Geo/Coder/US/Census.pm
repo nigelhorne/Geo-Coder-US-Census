@@ -114,6 +114,8 @@ sub geocode {
 	my $hr = Geo::StreetAddress::US->parse_address($location);
 
 	if((!defined($hr->{'city'})) || (!defined($hr->{'state'}))) {
+		# use Data::Dumper;
+		# print Data::Dumper->new([$hr])->Dump(), "\n";
 		Carp::carp(__PACKAGE__ . ": city and state are mandatory ($location)");
 		return;
 	}
