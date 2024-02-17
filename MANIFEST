@@ -1,6 +1,5 @@
 bin/census
 Changes
-eol.t
 ignore.txt
 lib/Geo/Coder/US/Census.pm
 LICENSE
