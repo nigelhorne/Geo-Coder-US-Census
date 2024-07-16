@@ -62,7 +62,7 @@ sub new {
 	}
 	my $host = $args{host} || 'geocoding.geo.census.gov/geocoder/locations/address';
 
-	return bless { ua => $ua, host => $host }, $class;
+	return bless { ua => $ua, host => $host, %args }, $class;
 }
 
 =head2 geocode
