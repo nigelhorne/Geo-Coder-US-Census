@@ -3,6 +3,9 @@ Revision history for Geo-Coder-US-Census
 0.07
 	TODO in t/us.t is now working
 	Tell you which package doesn't support reverse
+	Use Test::DescribeMe to simplify tests
+	Use Test::Needs
+	Use gtar to create a distribution on Macs
 
 0.06	Tue Jan 31 16:47:30 EST 2023
 	Compress the traffic

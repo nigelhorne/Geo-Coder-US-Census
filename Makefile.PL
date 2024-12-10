@@ -5,6 +5,7 @@ use Getopt::Long;	# Technique inspired by IO::Lambda
 use IO::Socket::INET;
 
 my $test_requires = {
+	'Test::DescribeMe' => 0,
 	'Test::Most' => 0,
 	'Test::NoWarnings' => 0,
 	'Test::Needs' => 0,
@@ -14,13 +15,22 @@ my $test_requires = {
 	'Test::LWP::UserAgent' => 0
 };
 
-if(online_tests()) {
+if(are_online()) {
 	open(my $enabled, '>', 't/online.enabled') || die "Can't touch t/online.enabled $!";
 	close($enabled) || die "Can't touch t/online.enabled $!";
 	$test_requires->{'Test::LWP::UserAgent'} = 0;
 	$test_requires->{'Test::Script'} = 1.12;
 } else {
 	unlink('t/online.enabled');
+}
+
+my $dist = {
+	COMPRESS => 'gzip -9f',
+	SUFFIX => 'gz'
+};
+
+if($^O eq 'darwin') {
+	$dist->{'TAR'} = 'gtar';
 }
 
 WriteMakefile(
@@ -43,8 +53,7 @@ WriteMakefile(
 		'URI' => 0,
 		'Geo::StreetAddress::US' => 0,
 		'Net::SSLeay' => 1.81,
-	},
-	dist		=> { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+	}, dist => $dist,
 	clean		=> { FILES => 'Geo-Coder-US-Census-*' },
 	META_MERGE		=> {
 		'meta-spec' => { version => 2 },
@@ -63,15 +72,14 @@ WriteMakefile(
 	MIN_PERL_VERSION	=> '5.6.2'	# Probably would work, but never tested on earlier versions than this
 );
 
-sub online_tests
+sub are_online
 {
-	return 0 if($ENV{'NO_NETWORK_TESTING'} || $ENV{'TRAVIS_PERL_VERSION'}) || $ENV{'AUTOMATED_TESTING'} || (!-t STDIN);
+	return 0 if($ENV{'NO_NETWORK_TESTING'} || $ENV{'CIRCLECI'} || $ENV{'TRAVIS_PERL_VERSION'} || $ENV{'AUTOMATED_TESTING'} || $ENV{'NONINTERACTIVE_TESTING'} || (!-t STDIN));
 
-	my $s = IO::Socket::INET->new(
+	if(my $s = IO::Socket::INET->new(
 		PeerAddr => 'geocoding.geo.census.gov:443',
 		Timeout => 10
-	);
-	if($s) {
+	)) {
 		if($ENV{'PERL_MM_USE_DEFAULT'} || $ENV{'AUTOMATED_TESTING'}) {
 			close($s);
 			return 1;
