@@ -7,7 +7,7 @@ Geo::Coder::US::Census - Provides a Geo-Coding functionality for the US using [h
 
 # VERSION
 
-Version 0.06
+Version 0.07
 
 # SYNOPSIS
 
