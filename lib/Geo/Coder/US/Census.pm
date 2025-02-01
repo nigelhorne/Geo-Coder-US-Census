@@ -4,13 +4,15 @@ use strict;
 use warnings;
 
 use Carp;
+use CHI;
 use Encode;
+use Geo::StreetAddress::US;
 use JSON::MaybeXS;
 use HTTP::Request;
 use LWP::UserAgent;
 use LWP::Protocol::https;
+use Time::HiRes;
 use URI;
-use Geo::StreetAddress::US;
 
 =head1 NAME
 
@@ -28,11 +30,17 @@ our $VERSION = '0.07';
 
       use Geo::Coder::US::Census;
 
-      my $geo_coder = Geo::Coder::US::Census->new();
+      my $geo_coder = Geo::Coder::US::Census->new(
+          min_interval => 1,   # Minimum interval (in seconds) between API calls
+          cache        => CHI->new( driver => 'Memory', global => 1, expires_in => '1 hour' ),
+      );
+
       # Get geocoding results (as a hash decoded from JSON)
       my $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
+
       # Sometimes the server gives a 500 error on this
       $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD, USA');
+      
 
 =head1 DESCRIPTION
 
@@ -68,7 +76,24 @@ sub new {
 	}
 	my $host = $args{host} || 'geocoding.geo.census.gov/geocoder/locations/address';
 
-	return bless { ua => $ua, host => $host, %args }, $class;
+	# Set up caching (default to an in-memory cache if none provided)
+	my $cache = $args{cache} || CHI->new(
+		driver     => 'Memory',
+		global     => 1,
+		expires_in => '1 hour',
+	);
+
+	# Set up rate-limiting: minimum interval between requests (in seconds)
+	my $min_interval = $args{min_interval} || 0; # default: no delay
+
+	return bless {
+		ua           => $ua,
+		host         => $host,
+		cache        => $cache,
+		min_interval => $min_interval,
+		last_request => 0,	# Initialize last_request timestamp
+		%args,
+	}, $class;
 }
 
 =head2 geocode
@@ -154,7 +179,22 @@ sub geocode {
 	$uri->query_form(%query_parameters);
 	my $url = $uri->as_string();
 
+	# Create a cache key based on the location (might want to use a stronger hash function if needed)
+	my $cache_key = "geocode:$location";
+	if (my $cached = $self->{cache}->get($cache_key)) {
+		return $cached;
+	}
+
+	# Enforce rate-limiting: ensure at least min_interval seconds between requests.
+	my $now = time();
+	my $elapsed = $now - $self->{last_request};
+	if($elapsed < $self->{min_interval}) {
+		Time::HiRes::sleep($self->{min_interval} - $elapsed);
+	}
 	my $res = $self->{ua}->get($url);
+
+	# Update last_request timestamp
+	$self->{last_request} = time();
 
 	if($res->is_error()) {
 		Carp::carp("$url API returned error: " . $res->status_line());
@@ -162,7 +202,12 @@ sub geocode {
 	}
 
 	my $json = JSON::MaybeXS->new->utf8();
-	return $json->decode($res->decoded_content());
+	my $data = $json->decode($res->decoded_content());
+
+	# Cache the result before returning it
+	$self->{cache}->set($cache_key, $data);
+
+	return $data;
 
 	# my @results = @{ $data || [] };
 	# wantarray ? @results : $results[0];

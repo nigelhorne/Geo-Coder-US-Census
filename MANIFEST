@@ -13,6 +13,7 @@ t/10-new.t
 t/30-basics.t
 t/bin.t
 t/boiler.t
+t/cache.t
 t/carp.t
 t/changes.t
 t/comment-spelling.t

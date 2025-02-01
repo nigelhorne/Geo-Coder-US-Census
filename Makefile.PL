@@ -46,6 +46,7 @@ WriteMakefile(
 	PL_FILES	=> {},
 	TEST_REQUIRES => $test_requires,
 	PREREQ_PM => {
+		'CHI' => 0,
 		'Encode' => 0,
 		'JSON::MaybeXS' => 0,
 		'HTTP::Request' => 0,
@@ -54,6 +55,7 @@ WriteMakefile(
 		'URI' => 0,
 		'Geo::StreetAddress::US' => 0,
 		'Net::SSLeay' => 1.81,
+		'Time::HiRes' => 0,
 	}, dist => $dist,
 	clean		=> { FILES => 'Geo-Coder-US-Census-*' },
 	META_MERGE		=> {
