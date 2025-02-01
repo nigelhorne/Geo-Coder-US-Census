@@ -10,6 +10,7 @@ README
 README.md
 t/00-load.t
 t/10-new.t
+t/30-basics.t
 t/bin.t
 t/boiler.t
 t/carp.t

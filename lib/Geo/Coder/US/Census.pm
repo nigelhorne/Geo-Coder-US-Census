@@ -29,13 +29,19 @@ our $VERSION = '0.06';
       use Geo::Coder::US::Census;
 
       my $geo_coder = Geo::Coder::US::Census->new();
+      # Get geocoding results (as a hash decoded from JSON)
       my $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
       # Sometimes the server gives a 500 error on this
       $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD, USA');
 
 =head1 DESCRIPTION
 
-Geo::Coder::US::Census provides an interface to geocoding.geo.census.gov.  Geo::Coder::US no longer seems to work.
+Geo::Coder::US::Census provides geocoding functionality specifically for U.S. and Canadian addresses by interfacing with the U.S. Census Bureau’s geocoding service.
+It allows developers to convert street addresses into geographical coordinates (latitude and longitude) by querying the Census Bureau's API.
+Using L<LWP::UserAgent> (or a user-supplied agent), the module constructs and sends an HTTP GET request to the API.
+
+The module uses L<Geo::StreetAddress::US> to break down a given address into its components (street, city, state, etc.),
+ensuring that the necessary details for geocoding are present.
 
 =head1 METHODS
 
@@ -66,6 +72,14 @@ sub new {
 }
 
 =head2 geocode
+
+Geocode an address.
+It accepts addresses provided in various forms—whether as a single argument,
+a key/value pair,
+or within a hash reference—making it easy to integrate into different codebases.
+It decodes the JSON response from the API using L<JSON::MaybeXS>,
+providing the result as a hash.
+This allows easy extraction of latitude, longitude, and other details returned by the service.
 
     $location = $geo_coder->geocode(location => $location);
     # @location = $geo_coder->geocode(location => $location);
@@ -183,6 +197,7 @@ sub ua {
 # Similar to geocode except it expects a latitude/longitude parameter.
 
 Not supported.
+Croaks if this method is called.
 
 =cut
 
@@ -205,7 +220,12 @@ sub reverse_geocode {
 
 =head2 run
 
-You can also run this module from the command line:
+In addition to being used as a library within other Perl scripts,
+L<Geo::Coder::US::Census> can be run directly from the command line.
+When invoked this way,
+it accepts an address as input,
+performs geocoding,
+and prints the resulting data structure via L<Data::Dumper>.
 
     perl Census.pm 1600 Pennsylvania Avenue NW, Washington DC
 
@@ -250,7 +270,7 @@ https://www.census.gov/data/developers/data-sets/Geocoding-services.html
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2017-2023 Nigel Horne.
+Copyright 2017-2025 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
