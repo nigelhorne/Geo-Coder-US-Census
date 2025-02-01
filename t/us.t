@@ -9,7 +9,7 @@ use warnings;
 use strict;
 use Data::Dumper;
 use Test::Number::Delta within => 1e-2;
-use Test::Most tests => 18;
+use Test::Most tests => 19;
 use Test::Carp;
 
 BEGIN {
@@ -21,10 +21,10 @@ US: {
 		if(!-e 't/online.enabled') {
 			if(!$ENV{AUTHOR_TESTING}) {
 				diag('Author tests not required for installation');
-				skip('Author tests not required for installation', 17);
+				skip('Author tests not required for installation', 18);
 			} else {
 				diag('Test requires Internet access');
-				skip('Test requires Internet access', 17);
+				skip('Test requires Internet access', 18);
 			}
 		}
 
@@ -90,9 +90,16 @@ US: {
 
 		$geocoder->ua($ua);
 
-		sub f {
-			$location = $geocoder->geocode({ location => '1600 Pennsylvania Avenue NW, Washington DC, USA' });
-		}
-		does_carp_that_matches(\&f, qr/https?:\/\/geocoding.geo.census.gov.+ API returned error: 500/);
+		# sub f {
+			# $location = $geocoder->geocode({ location => '1600 Pennsylvania Avenue NW, Washington DC, USA' });
+			# if(defined($location)) {
+				# diag(Data::Dumper->new([$location])->Dump());
+			# }
+		# }
+		# does_carp_that_matches(\&f, qr/https?:\/\/geocoding.geo.census.gov.+ API returned error: 500/);
+
+		$location = $geocoder->geocode({ location => '1600 Pennsylvania Avenue NW, Washington DC, USA' });
+		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{y}, 38.90);	# Lat
+		delta_ok($location->{result}{addressMatches}[0]->{coordinates}{x}, -77.04);	# Long
 	}
 }

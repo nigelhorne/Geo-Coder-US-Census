@@ -28,19 +28,39 @@ our $VERSION = '0.07';
 
 =head1 SYNOPSIS
 
-      use Geo::Coder::US::Census;
+  use Geo::Coder::US::Census;
+  use CHI;
 
-      my $geo_coder = Geo::Coder::US::Census->new(
-          min_interval => 1,   # Minimum interval (in seconds) between API calls
-          cache        => CHI->new( driver => 'Memory', global => 1, expires_in => '1 hour' ),
-      );
+  # Create a cache object (here, an in-memory cache)
+  my $cache = CHI->new(
+      driver => 'Memory',
+      global => 1,
+      expires_in => '1 hour',
+  );
 
-      # Get geocoding results (as a hash decoded from JSON)
-      my $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
+  # Instantiate the geocoder with a custom User Agent, cache, and a minimum interval between API calls.
+  my $geo_coder = Geo::Coder::US::Census->new(
+      ua     => LWP::UserAgent->new(agent => 'MyApp/1.0'),
+      cache    => $cache,
+      min_interval => 1,    # Minimum interval of 1 second between API calls
+  );
 
-      # Sometimes the server gives a 500 error on this
-      $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD, USA');
-      
+  # Get geocoding results (as a hash decoded from JSON)
+  my $result = $geo_coder->geocode(location => "4600 Silver Hill Rd., Suitland, MD");
+
+  if($result) {
+      # Access latitude and longitude from the API response (structure may vary)
+      print 'Latitude: ', $result->{result}{addressMatches}[0]{coordinates}{x}, "\n";
+      print 'Longitude: ', $result->{result}{addressMatches}[0]{coordinates}{y}, "\n";
+  }
+
+  # Sometimes the server gives a 500 error on this
+  $location = $geo_coder->geocode(location => '4600 Silver Hill Rd., Suitland, MD, USA');
+
+  # Note: Reverse geocoding is not supported.
+
+  # The module can also be executed from the command line:
+  #   perl Geo/Coder/US/Census.pm "1600 Pennsylvania Avenue NW, Washington, DC"
 
 =head1 DESCRIPTION
 
@@ -51,9 +71,68 @@ Using L<LWP::UserAgent> (or a user-supplied agent), the module constructs and se
 The module uses L<Geo::StreetAddress::US> to break down a given address into its components (street, city, state, etc.),
 ensuring that the necessary details for geocoding are present.
 
+=over 4
+
+=item * Caching
+
+Identical geocode requests are cached (using L<CHI> or a user-supplied caching object),
+reducing the number of HTTP requests to the API and speeding up repeated queries.
+
+This module leverages L<CHI> for caching geocoding responses.
+When a geocode request is made,
+a cache key is constructed from the complete query URL.
+If a cached response exists,
+it is returned immediately,
+avoiding unnecessary API calls.
+
+=item * Rate-Limiting
+
+A minimum interval between successive API calls can be enforced to ensure that the Census API is not overwhelmed and to comply with any request throttling requirements.
+
+Rate-limiting is implemented using L<Time::HiRes>.
+A minimum interval between API
+calls can be specified via the C<min_interval> parameter in the constructor.
+Before making an API call,
+the module checks how much time has elapsed since the
+last request and,
+if necessary,
+sleeps for the remaining time.
+
+=back
+
 =head1 METHODS
 
 =head2 new
+
+  $geo_coder = Geo::Coder::US::Census->new(%options);
+
+Creates a new instance of the geocoder. Acceptable options include:
+
+=over 4
+
+=item * C<ua>
+
+An object to use for HTTP requests.
+If not provided, a default user agent is created.
+
+=item * C<host>
+
+The API host endpoint.
+Defaults to L<https://geocoding.geo.census.gov/geocoder/locations/address>.
+
+=item * C<cache>
+
+A caching object.
+If not provided,
+an in-memory cache is created with a default expiration of one hour.
+
+=item * C<min_interval>
+
+Minimum number of seconds to wait between API requests.
+Defaults to C<0> (no delay).
+Use this option to enforce rate-limiting.
+
+=back
 
     $geo_coder = Geo::Coder::US::Census->new();
     my $ua = LWP::UserAgent->new();
@@ -78,8 +157,8 @@ sub new {
 
 	# Set up caching (default to an in-memory cache if none provided)
 	my $cache = $args{cache} || CHI->new(
-		driver     => 'Memory',
-		global     => 1,
+		driver => 'Memory',
+		global => 1,
 		expires_in => '1 hour',
 	);
 
@@ -87,9 +166,9 @@ sub new {
 	my $min_interval = $args{min_interval} || 0; # default: no delay
 
 	return bless {
-		ua           => $ua,
-		host         => $host,
-		cache        => $cache,
+		ua     => $ua,
+		host   => $host,
+		cache  => $cache,
 		min_interval => $min_interval,
 		last_request => 0,	# Initialize last_request timestamp
 		%args,
@@ -111,6 +190,26 @@ This allows easy extraction of latitude, longitude, and other details returned b
 
     print 'Latitude: ', $location->{'latt'}, "\n";
     print 'Longitude: ', $location->{'longt'}, "\n";
+
+=over 4
+
+=item * A hash (or hash reference) with a key C<location>.
+
+=item * A single string argument (which is assumed to be the location).
+
+=back
+
+Before sending the query, the address is:
+
+=over 4
+
+=item * Converted to UTF-8 if necessary
+
+=item * Cleaned by removing trailing country names (e.g., "United States", "US", "USA")
+
+=item * Parsed using L<Geo::StreetAddress::US> to extract key components (e.g., street, city, state)
+
+=back
 
 =cut
 
@@ -241,8 +340,8 @@ sub ua {
 
 # Similar to geocode except it expects a latitude/longitude parameter.
 
-Not supported.
-Croaks if this method is called.
+Reverse geocoding is not supported by this module.
+Calling this method will immediately throw an exception.
 
 =cut
 
@@ -273,6 +372,21 @@ performs geocoding,
 and prints the resulting data structure via L<Data::Dumper>.
 
     perl Census.pm 1600 Pennsylvania Avenue NW, Washington DC
+
+This method allows the module to be executed as a standalone script from the command line.
+It will:
+
+=over 4
+
+=item * Join command-line arguments into a single address string
+
+=item * Create a new geocoder instance and attempt to geocode the address
+
+=item * Die with an error message if geocoding fails
+
+=item * Dump the resulting data structure to STDOUT using L<Data::Dumper>
+
+=back
 
 =cut
 
@@ -305,11 +419,14 @@ Lots of thanks to the folks at geocoding.geo.census.gov.
 
 =head1 BUGS
 
+Please report any bugs or feature requests to the author.
+This module is provided as-is without any warranty.
+
 =head1 SEE ALSO
 
 L<Geo::Coder::GooglePlaces>, L<HTML::GoogleMaps::V3>
 
-https://www.census.gov/data/developers/data-sets/Geocoding-services.html
+L<https://www.census.gov/data/developers/data-sets/Geocoding-services.html>
 
 =head1 LICENSE AND COPYRIGHT
 
