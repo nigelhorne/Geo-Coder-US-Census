@@ -31,6 +31,7 @@ t/metrics.t
 t/namespaces.t
 t/no404s.t
 t/noplan.t
+t/offline.t
 t/pod-cm.t
 t/pod-spelling.t
 t/pod-synopsis.t

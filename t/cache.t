@@ -8,6 +8,8 @@ use Test::Most;
 use CHI;
 use Time::HiRes qw(time);
 
+BEGIN { use_ok('Geo::Coder::US::Census') }
+
 # --- Create a custom LWP::UserAgent for testing ---
 {
 	package MyTestUA;
@@ -38,7 +40,6 @@ use Time::HiRes qw(time);
 }
 
 # --- Create a Geo::Coder::US::Census object with caching and rate limiting ---
-use Geo::Coder::US::Census;
 
 # Set a short minimum interval for testing purposes (e.g. 1 second)
 # But don't test for less than a second without changing the test timer to track microseconds
@@ -46,8 +47,8 @@ my $min_interval = 1;
 
 # Create an in-memory cache using CHI
 my $cache = CHI->new(
-	driver	 => 'Memory',
-	global	 => 1,
+	driver => 'Memory',
+	global => 1,
 	expires_in => '1 hour',
 );
 
@@ -56,12 +57,10 @@ my $ua = MyTestUA->new();
 
 # Instantiate the geocoder with our custom UA, cache, and min_interval
 my $geo = Geo::Coder::US::Census->new(
-	ua		   => $ua,
+	ua => $ua,
 	cache		=> $cache,
 	min_interval => $min_interval,
 );
-
-plan tests => 9;
 
 # --- Test 1: Calling geocode with a valid address returns a hashref ---
 my $res1 = $geo->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
