@@ -36,7 +36,7 @@ our $VERSION = '0.06';
 
 =head1 DESCRIPTION
 
-Geo::Coder::US::Census provides geocoding functionality specifically for U.S. and Canadian addresses by interfacing with the U.S. Census Bureau’s geocoding service.
+Geo::Coder::US::Census provides geocoding functionality specifically for U.S. addresses by interfacing with the U.S. Census Bureau's geocoding service.
 It allows developers to convert street addresses into geographical coordinates (latitude and longitude) by querying the Census Bureau's API.
 Using L<LWP::UserAgent> (or a user-supplied agent), the module constructs and sends an HTTP GET request to the API.
 
@@ -74,9 +74,9 @@ sub new {
 =head2 geocode
 
 Geocode an address.
-It accepts addresses provided in various forms—whether as a single argument,
-a key/value pair,
-or within a hash reference—making it easy to integrate into different codebases.
+It accepts addresses provided in various forms -
+whether as a single argument, a key/value pair, or within a hash reference -
+making it easy to integrate into different codebases.
 It decodes the JSON response from the API using L<JSON::MaybeXS>,
 providing the result as a hash.
 This allows easy extraction of latitude, longitude, and other details returned by the service.
@@ -259,8 +259,6 @@ it under the same terms as Perl itself.
 Lots of thanks to the folks at geocoding.geo.census.gov.
 
 =head1 BUGS
-
-Should be called Geo::Coder::NA for North America.
 
 =head1 SEE ALSO
 
