@@ -36,6 +36,8 @@ my $geo = Geo::Coder::US::Census->new(
 	min_interval => 0,	# No rate limit delay needed for this test
 );
 
+ok($geo->ua() eq $tua);
+
 # Calling geocode should return a hash reference.
 my $result = $geo->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
 ok($result && ref($result) eq 'HASH', 'geocode returned a hash reference');
