@@ -159,7 +159,7 @@ sub new {
 	my $cache = $args{cache} || CHI->new(
 		driver => 'Memory',
 		global => 1,
-		expires_in => '1 hour',
+		expires_in => '1 day',
 	);
 
 	# Set up rate-limiting: minimum interval between requests (in seconds)
