@@ -83,7 +83,7 @@ sub are_online
 		PeerAddr => 'geocoding.geo.census.gov:443',
 		Timeout => 10
 	)) {
-		if($ENV{'PERL_MM_USE_DEFAULT'} || $ENV{'AUTOMATED_TESTING'}) {
+		if($ENV{'PERL_MM_USE_DEFAULT'}) {
 			close($s);
 			return 1;
 		}
