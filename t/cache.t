@@ -58,7 +58,7 @@ my $ua = MyTestUA->new();
 # Instantiate the geocoder with our custom UA, cache, and min_interval
 my $geo = Geo::Coder::US::Census->new(
 	ua => $ua,
-	cache		=> $cache,
+	cache => $cache,
 	min_interval => $min_interval,
 );
 
@@ -85,7 +85,7 @@ my $num_requests = scalar @MyTestUA::REQUEST_TIMES;
 ok($num_requests >= 2, 'At least two API requests have been made');
 cmp_ok($num_requests, '==', $MyTestUA::REQUEST_COUNT);
 
-if ($num_requests >= 2) {
+if($num_requests >= 2) {
 	my $elapsed = $MyTestUA::REQUEST_TIMES[1] - $MyTestUA::REQUEST_TIMES[0];
 	cmp_ok($elapsed, '>=', $min_interval, "Rate limiting enforced: elapsed time >= $min_interval sec");
 }

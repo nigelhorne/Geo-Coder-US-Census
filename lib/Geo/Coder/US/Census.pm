@@ -80,7 +80,7 @@ reducing the number of HTTP requests to the API and speeding up repeated queries
 
 This module leverages L<CHI> for caching geocoding responses.
 When a geocode request is made,
-a cache key is constructed from the complete query URL.
+a cache key is constructed from the request.
 If a cached response exists,
 it is returned immediately,
 avoiding unnecessary API calls.
@@ -163,12 +163,12 @@ sub new {
 	);
 
 	# Set up rate-limiting: minimum interval between requests (in seconds)
-	my $min_interval = $args{min_interval} || 0; # default: no delay
+	my $min_interval = $args{min_interval} || 0;	# default: no delay
 
 	return bless {
-		ua     => $ua,
-		host   => $host,
-		cache  => $cache,
+		ua => $ua,
+		host => $host,
+		cache => $cache,
 		min_interval => $min_interval,
 		last_request => 0,	# Initialize last_request timestamp
 		%args,
@@ -280,7 +280,7 @@ sub geocode {
 
 	# Create a cache key based on the location (might want to use a stronger hash function if needed)
 	my $cache_key = "geocode:$location";
-	if (my $cached = $self->{cache}->get($cache_key)) {
+	if(my $cached = $self->{cache}->get($cache_key)) {
 		return $cached;
 	}
 

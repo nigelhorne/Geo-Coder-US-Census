@@ -52,6 +52,8 @@ ok(ref($result->{result}{addressMatches}) eq 'ARRAY', 'addressMatches is an arra
 my $result_cached = $geo->geocode(location => '4600 Silver Hill Rd., Suitland, MD');
 is_deeply($result, $result_cached, 'Second call returns the cached result');
 
+ok($cache->get('geocode:4600 Silver Hill Rd., Suitland, MD'));
+
 # Verify that the dummy response content was returned.
 like( $dummy_response, qr/"dummy":"match"/, 'Dummy response contains expected content' );
 
