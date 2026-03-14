@@ -110,6 +110,12 @@ Creates a new instance of the geocoder. Acceptable options include:
 
 =over 4
 
+=item * C<cache>
+
+A caching object.
+If not provided,
+an in-memory cache is created with a default expiration of one hour.
+
 =item * C<ua>
 
 An object to use for HTTP requests.
@@ -119,12 +125,6 @@ If not provided, a default user agent is created.
 
 The API host endpoint.
 Defaults to L<https://geocoding.geo.census.gov/geocoder/locations/address>.
-
-=item * C<cache>
-
-A caching object.
-If not provided,
-an in-memory cache is created with a default expiration of one hour.
 
 =item * C<min_interval>
 
@@ -290,10 +290,11 @@ sub geocode {
 	if($elapsed < $self->{min_interval}) {
 		Time::HiRes::sleep($self->{min_interval} - $elapsed);
 	}
+
 	my $res = $self->{ua}->get($url);
 
 	# Update last_request timestamp
-	$self->{last_request} = time();
+	$self->{'last_request'} = time();
 
 	if($res->is_error()) {
 		Carp::carp("$url API returned error: " . $res->status_line());
@@ -304,7 +305,7 @@ sub geocode {
 	my $data = $json->decode($res->decoded_content());
 
 	# Cache the result before returning it
-	$self->{cache}->set($cache_key, $data);
+	$self->{'cache'}->set($cache_key, $data);
 
 	return $data;
 
